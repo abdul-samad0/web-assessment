@@ -1,0 +1,70 @@
+<%- include('../layout/header') %>
+
+<div class="row">
+  <div class="col-md-4">
+    <img src="<%= book.cover_image || '/images/default-book.jpg' %>" class="img-fluid rounded" alt="<%= book.title %>">
+  </div>
+  <div class="col-md-8">
+    <h1><%= book.title %></h1>
+    <h4 class="text-muted">by <%= book.author %></h4>
+    <span class="badge bg-primary"><%= book.category_name %></span>
+    
+    <div class="mt-4">
+      <h5>Description</h5>
+      <p><%= book.description %></p>
+    </div>
+
+    <% if (user) { %>
+      <div class="mt-4">
+        <h5>Add a Review</h5>
+        <form action="/book/<%= book.id %>/review" method="POST">
+          <div class="mb-3">
+            <label for="rating" class="form-label">Rating</label>
+            <select class="form-select" id="rating" name="rating" required>
+              <option value="5">5 - Excellent</option>
+              <option value="4">4 - Very Good</option>
+              <option value="3">3 - Good</option>
+              <option value="2">2 - Fair</option>
+              <option value="1">1 - Poor</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="comment" class="form-label">Comment</label>
+            <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit Review</button>
+        </form>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<div class="mt-5">
+  <h3>Reviews</h3>
+  <% if (reviews.length > 0) { %>
+    <div class="row">
+      <% reviews.forEach(review => { %>
+        <div class="col-md-6 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between">
+                <h5 class="card-title"><%= review.username %></h5>
+                <div class="text-warning">
+                  <% for(let i = 0; i < review.rating; i++) { %>⭐<% } %>
+                </div>
+              </div>
+              <p class="card-text"><%= review.comment %></p>
+              <small class="text-muted">
+                <%= new Date(review.created_at).toLocaleDateString() %>
+              </small>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% } else { %>
+    <p>No reviews yet. Be the first to review this book!</p>
+  <% } %>
+</div>
+
+<%- include('../layout/footer') %>

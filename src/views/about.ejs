@@ -1,0 +1,66 @@
+<%- include('layout/header') %>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h1 class="card-title text-center mb-4">About Book Review</h1>
+          
+          <div class="mb-4">
+            <h2>Our Mission</h2>
+            <p>Welcome to Book Review, your ultimate destination for discovering, sharing, and discussing books. We believe in the power of reading and the importance of sharing perspectives through thoughtful reviews.</p>
+          </div>
+
+          <div class="mb-4">
+            <h2>Features</h2>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-search"></i> Discover</h5>
+                    <p class="card-text">Search through our extensive collection of books across various genres.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-star"></i> Review</h5>
+                    <p class="card-text">Share your thoughts and rate books you've read.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-plus"></i> Contribute</h5>
+                    <p class="card-text">Add new books to our database and help grow our community.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card mb-3">
+                  <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-users"></i> Connect</h5>
+                    <p class="card-text">Join a community of book lovers and share your passion for reading.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <% if (!user) { %>
+              <p>Ready to join our community?</p>
+              <a href="/auth/register" class="btn btn-primary me-2">Register Now</a>
+              <a href="/auth/login" class="btn btn-outline-primary">Login</a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('layout/footer') %>

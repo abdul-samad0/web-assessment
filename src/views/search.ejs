@@ -1,0 +1,61 @@
+<%- include('layout/header') %>
+
+<div class="container">
+  <h1 class="mb-4">Search Books</h1>
+
+  <form action="/search" method="GET" class="mb-4">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="input-group">
+          <input type="text" name="query" class="form-control" placeholder="Search by title or author" value="<%= locals.query || '' %>">
+          <select name="category" class="form-select" style="max-width: 200px;">
+            <option value="">All Categories</option>
+            <% if (locals.categories) { %>
+              <% categories.forEach(category => { %>
+                <option value="<%= category.id %>" <%= (locals.selectedCategory && locals.selectedCategory == category.id) ? 'selected' : '' %>>
+                  <%= category.name %>
+                </option>
+              <% }); %>
+            <% } %>
+          </select>
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <% if (locals.books && books.length > 0) { %>
+    <div class="row">
+      <% books.forEach(book => { %>
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <% if (book.cover_image) { %>
+              <img src="<%= book.cover_image %>" class="card-img-top" alt="<%= book.title %>">
+            <% } %>
+            <div class="card-body">
+              <h5 class="card-title"><%= book.title %></h5>
+              <h6 class="card-subtitle mb-2 text-muted"><%= book.author %></h6>
+              <% if (book.category_name) { %>
+                <span class="badge bg-secondary"><%= book.category_name %></span>
+              <% } %>
+              <% if (book.avg_rating) { %>
+                <div class="text-warning mt-2">
+                  <% for(let i = 0; i < Math.round(book.avg_rating); i++) { %>⭐<% } %>
+                  (<%= parseFloat(book.avg_rating).toFixed(1) %>)
+                </div>
+              <% } %>
+              <p class="card-text mt-2"><%= book.description ? book.description.substring(0, 150) + '...' : '' %></p>
+              <a href="/book/<%= book.id %>" class="btn btn-primary">View Details</a>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% } else if (locals.query) { %>
+    <div class="alert alert-info">
+      No books found matching your search criteria.
+    </div>
+  <% } %>
+</div>
+
+<%- include('layout/footer') %>
