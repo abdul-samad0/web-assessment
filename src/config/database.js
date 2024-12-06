@@ -1,18 +1,29 @@
 const mysql = require('mysql2');
 
-const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: 'AS!12345',
-  database: 'book_review_db'
-}).promise();
+let pool; // Define a variable to hold the connection pool
 
 async function initializeDatabase() {
   try {
-    await pool.query(`CREATE DATABASE IF NOT EXISTS book_review_db`);
-    await pool.query(`USE book_review_db`);
+    // Create a connection pool without specifying the database
+    const poolWithoutDb = mysql.createPool({
+      host: 'localhost',
+      user: 'root',
+      password: 'AS!12345',
+    }).promise();
 
-    // Users table
+    // Create the database if it does not exist
+    await poolWithoutDb.query(`CREATE DATABASE IF NOT EXISTS book_review_db`);
+    console.log('Database created or already exists.');
+
+    // Create a new pool with the specified database
+    pool = mysql.createPool({
+      host: 'localhost',
+      user: 'root',
+      password: 'AS!12345',
+      database: 'book_review_db',
+    }).promise();
+
+    // Use the new pool to create tables
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -23,7 +34,6 @@ async function initializeDatabase() {
       )
     `);
 
-    // Categories table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS categories (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -32,7 +42,6 @@ async function initializeDatabase() {
       )
     `);
 
-    // Books table with category
     await pool.query(`
       CREATE TABLE IF NOT EXISTS books (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -46,7 +55,6 @@ async function initializeDatabase() {
       )
     `);
 
-    // Reviews table with user reference
     await pool.query(`
       CREATE TABLE IF NOT EXISTS reviews (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -60,7 +68,6 @@ async function initializeDatabase() {
       )
     `);
 
-    // Insert default categories
     await pool.query(`
       INSERT IGNORE INTO categories (name, description) VALUES 
       ('Fiction', 'Fictional literature and novels'),
@@ -73,9 +80,13 @@ async function initializeDatabase() {
     console.log('Database and tables initialized successfully');
   } catch (error) {
     console.error('Database initialization error:', error);
+    throw error;
   }
 }
 
+// Immediately initialize the database and export the pool
 initializeDatabase();
 
-module.exports = pool;
+module.exports = {
+  query: (sql, params) => pool.query(sql, params), // Export a query wrapper
+};
